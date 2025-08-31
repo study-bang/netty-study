@@ -1,5 +1,20 @@
-package com.example.first;
+package com.example.two.aa;
 
+/**
+. 문제점 (Drawbacks)
+DATA 패킷이 들어올 때마다 cancel()과 schedule()을 호출하는 방식은 다음과 같은 오버헤드를 유발합니다.
+
+객체 생성 오버헤드: schedule() 메서드가 호출될 때마다 새로운 ScheduledFuture와 Runnable 객체가 생성됩니다. 데이터 수신 빈도가 높을수록 이 객체들이 끊임없이 생성되어 메모리 사용량이 증가합니다.
+
+가비지 컬렉션 부하: 짧은 시간 동안 많은 객체가 생성되었다가 즉시 사용이 끝나면, 가비지 컬렉터(GC)가 이를 처리하기 위해 자주 작동해야 합니다. 이로 인해 CPU 자원이 소모되고, 애플리케이션의 성능 저하로 이어질 수 있습니다.
+
+따라서 실시간성 데이터와 같이 높은 빈도의 통신에서는 더 효율적인 패턴이 필요합니다.
+
+2. 개선된 패턴 (Improved Pattern)
+더 나은 방법은 타임아웃 작업을 하나만 유지하고, 데이터가 들어올 때마다 타임스탬프를 갱신하는 것입니다. 예약된 작업은 실행 시점에 마지막 타임스탬프를 확인하여 실제 타임아웃 여부를 판단합니다.
+
+샘플 코드: 타임스탬프 기반 타임아웃
+ */
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
