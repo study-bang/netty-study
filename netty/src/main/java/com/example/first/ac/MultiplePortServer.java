@@ -1,25 +1,23 @@
-package com.example.ed;
+package com.example.first.ac;
 
+// MultiplePortServer.java
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 
-public class PortReceiverServer {
+public class MultiplePortServer {
     private final int tcpPort;
 
-    public PortReceiverServer(int tcpPort) {
+    public MultiplePortServer(int tcpPort) {
         this.tcpPort = tcpPort;
     }
 
     public void start() throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
-
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
@@ -28,18 +26,22 @@ public class PortReceiverServer {
                  @Override
                  protected void initChannel(SocketChannel ch) {
                      ch.pipeline().addLast(
-                         new StringDecoder(), // 바이트 데이터를 문자열로 변환
-                         new PortHandler() // UDP 클라이언트 생성 로직
+                         new StringDecoder(), 
+                         new PortDistributorHandler() // 여러 포트를 분배하는 핸들러
                      );
                  }
              });
 
             ChannelFuture f = b.bind(tcpPort).sync();
-            System.out.println("TCP server started on port " + tcpPort);
+            System.out.println("TCP server for multiple ports started on " + tcpPort);
             f.channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        new MultiplePortServer(8888).start();
     }
 }

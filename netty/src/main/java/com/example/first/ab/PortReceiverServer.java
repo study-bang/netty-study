@@ -1,17 +1,16 @@
-package com.example.ef;
+package com.example.first.ab;
 
-// MultiplePortServer.java
+// PortReceiverServer.java
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
 
-public class MultiplePortServer {
+public class PortReceiverServer {
     private final int tcpPort;
 
-    public MultiplePortServer(int tcpPort) {
+    public PortReceiverServer(int tcpPort) {
         this.tcpPort = tcpPort;
     }
 
@@ -24,24 +23,16 @@ public class MultiplePortServer {
              .channel(NioServerSocketChannel.class)
              .childHandler(new ChannelInitializer<SocketChannel>() {
                  @Override
-                 protected void initChannel(SocketChannel ch) {
-                     ch.pipeline().addLast(
-                         new StringDecoder(), 
-                         new PortDistributorHandler() // 여러 포트를 분배하는 핸들러
-                     );
+                 public void initChannel(SocketChannel ch) {
+                     ch.pipeline().addLast(new AddressHandler());
                  }
              });
-
             ChannelFuture f = b.bind(tcpPort).sync();
-            System.out.println("TCP server for multiple ports started on " + tcpPort);
+            System.out.println("TCP Server started on port " + tcpPort);
             f.channel().closeFuture().sync();
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        new MultiplePortServer(8888).start();
     }
 }
