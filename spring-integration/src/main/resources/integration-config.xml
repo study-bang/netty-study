@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:int="http://www.springframework.org/schema/integration"
+    xmlns:int-file="http://www.springframework.org/schema/integration/file"
+    xmlns:int-kafka="http://www.springframework.org/schema/integration/kafka"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/integration
+        https://www.springframework.org/schema/integration/spring-integration.xsd
+        http://www.springframework.org/schema/integration/file
+        https://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+        http://www.springframework.org/schema/integration/kafka
+        https://www.springframework.org/schema/integration/kafka/spring-integration-kafka.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.example.integration" />
+    <context:property-placeholder location="classpath:application.properties" />
+
+    <int:channel id="inputChannel" />
+    <int:channel id="logChannel" />
+    <int:channel id="channelA" />
+    <int:channel id="channelB" />
+
+    <int:router input-channel="inputChannel" expression="headers['operation']">
+        <int:mapping value="A" channel="channelA" />
+        <int:mapping value="B" channel="channelB" />
+    </int:router>
+
+    <int:service-activator input-channel="channelA" ref="serviceA" method="processA" />
+
+    <int-kafka:outbound-channel-adapter id="kafkaAdapter"
+        channel="channelB"
+        kafka-template="kafkaTemplate"
+        topic="my-topic" />
+
+    <int:channel id="loggingChannel">
+        <int:interceptors>
+            <int:wire-tap channel="logChannel" />
+        </int:interceptors>
+    </int:channel>
+
+    <int:service-activator input-channel="logChannel" ref="loggingService" method="log" />
+
+</beans>
