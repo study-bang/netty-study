@@ -1,4 +1,4 @@
-# netty-study
+# study
 
 ### netty
 ### spring-integration
