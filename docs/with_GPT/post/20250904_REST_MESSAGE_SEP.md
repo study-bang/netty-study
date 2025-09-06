@@ -1,3 +1,6 @@
+# with GPT
+## spring integration message, rest 분리구성안
+
 좋습니다. 그러면 RestTemplate 같은 Spring Integration 내장 HTTP 아웃바운드 게이트웨이 대신, restClient(예: Spring WebClient나 직접 만든 REST 클라이언트)를 사용해서 REST 호출을 하는 구조로 XML 예제를 보여드릴 수 있습니다.
 
 핵심 아이디어는 같습니다:
