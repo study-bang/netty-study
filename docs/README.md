@@ -3,6 +3,7 @@
 
 ### docs
 - [netty](netty/README.md)
+- [Spring Integration](spring_integration/README.md)
 - [with GPT](with_GPT/README.md)
 
 ### md 파일 코맨트
