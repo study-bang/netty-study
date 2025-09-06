@@ -1,3 +1,0 @@
-# with GPT
-
-### docs list
