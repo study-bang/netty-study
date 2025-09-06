@@ -1,3 +1,6 @@
-### with GPT docs list
+# with GPT
+- site: <a href="https://chatgpt.com/" target="_blank">chatgpt</a>
+
+### docs list
 - [20250904_REST_MESSAGE_분리](post/20250904_REST_MESSAGE_SEP.md)
 - [20250903_NETTY_SI](post/20250906_NETTY_SI.md)
